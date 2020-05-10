@@ -1,18 +1,17 @@
-FROM python:3.6-slim
+FROM golang:1.14
+
+EXPOSE 80/udp
 
 LABEL maintainer="elmundio87"
 
-COPY . /srv/flask_app
-WORKDIR /srv/flask_app
+WORKDIR /go/src/app
+COPY . .
 
 RUN apt-get clean \
     && apt-get -y update
-RUN apt-get -y install nginx \
-    && apt-get -y install python3-dev \
-    && apt-get -y install build-essential
-
-RUN pip install -r requirements.txt --src /usr/local/src
-
+RUN apt-get -y install nginx
 COPY nginx.conf /etc/nginx
-RUN chmod +x ./start.sh
-CMD ["./start.sh"]
+RUN go get -d -v ./...
+RUN go install -v ./...
+
+CMD service nginx start && app
