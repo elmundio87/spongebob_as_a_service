@@ -1,6 +1,6 @@
 FROM golang:1.14
 
-EXPOSE 80/udp
+EXPOSE 80/tcp
 
 LABEL maintainer="elmundio87"
 
